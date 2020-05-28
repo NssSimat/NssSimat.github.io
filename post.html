@@ -22,15 +22,20 @@ var db = firebase.firestore();
 function a(){}
 
 		</script>
-		<script>
-var posttypehtml = document.getElementsByTagName("link")[0].import;
-window.addEventListener("load", function() {
-  document.getElementsByTagName("div")[0].innerHTML = posttypehtml;
-}, false);
-		</script>
 	</head>
 	<body style=" font-family: ubuntu; overflow: hidden;">
 		<div style="align-items: center;justify-content: center;justify-items: center;display: flex;font-size: 15; height: 100%; background-color:#aaa">
+			<div style="padding-left:50; padding-right: 50; padding-top:30; padding-bottom:40; background-color:#fff; border-radius: 10px;">
+				<div style="text-align:center; margin-bottom: 30; font-size:25; font-weight: bold;">Select Post Type</div>
+				<div style="display: flex; flex-direction: row; justify-content: center">
+					<div style="padding-right:20" onclick="document.getElementById('rdMedia').checked = false; document.getElementById('rdText').checked = true" >
+						<input type="checkbox" onclick="document.getElementById('rdMedia').checked = false" checked id="rdText"/>Text Only
+					</div>
+					<div style="padding-left:20" onclick="document.getElementById('rdMedia').checked = true; document.getElementById('rdText').checked = false">
+						<input type="checkbox" onclick="document.getElementById('rdText').checked = false" id="rdMedia" />Text and Media
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
