@@ -1,0 +1,357 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Add Menu Items</title>
+
+		<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-firestore.js"></script>
+		<title>Add Posts</title>
+<style>
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.loader {
+  margin: 60px auto;
+  font-size: 5px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-right: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-left: 1.5em solid #00000055;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 0.8s infinite linear;
+  animation: load8 0.8s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+</style>
+		<script>
+var firebaseConfig = {
+	apiKey: "AIzaSyDsQxF3m_SqRGSKrEe48RfPTRHWb_TjKnY",
+	authDomain: "nsssimat-233.firebaseapp.com",
+	databaseURL: "https://nsssimat-233.firebaseio.com",
+	projectId: "nsssimat-233",
+	storageBucket: "nsssimat-233.appspot.com",
+	messagingSenderId: "839441345804",
+	appId: "1:839441345804:web:47dc358189081ad7dfad29",
+	measurementId: "G-4EP88P3ZE8"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+		</script>
+		<script>
+const size = 0.8;
+function format(txt){
+//	console.log('formatting, '+txt.length);
+	var arr = txt.split('\n\n')
+	return arr.reduce((s,i) =>s+'<div style="margin-bottom:'+9*size+'px;margin-top:'+9*size+'px;">'+paraFormat(i)+'</div>', '');
+}
+function paraFormat(txt){
+	var arr = txt.split('\n')
+//	console.log(arr)
+	var final = [];
+	var block = [];
+	var pblock = function (){
+//      console.log(block.length)
+		if(block.length>0){
+		//	console.log('jhhs');
+			final.push({arr:block,type:'b'})
+			block = []
+		}
+	}
+	var plist = function (){
+		if(list.length>0){
+			final.push({arr:list,type:'l'})
+			list = [];
+		}
+	}
+	var list = [];
+	var state = ''
+	var paraing = true
+	for(let i of arr){
+//		coinsole.log(i);
+//		console.log(block.length);
+/*		if(state==='b'){
+			if(i==='`'){
+				final.push({arr:dblock, type:'db'});
+				dblock = []
+				state = ''
+			}else {
+				dblock.push(i);
+			}
+		}
+		else if(i==='`'){
+			state = 'b';
+			pblock();
+		}
+		else*/ if(i[0]==='#'){
+			pblock(); plist();
+			final.push({arr:i, type:'h'});
+		} else if(i[0]==='-'||i[0]==='+'/*||i[0]==='*'||i[0]==='^'*/) {
+//			plist();
+			list.push(i);
+//			console.log('pushing, '+block.length)
+		} else if(i[0]===' ' && list.length){
+			list[list.length-1]+='\n'+(i.substr(1))
+		//	console.log('sddsa')
+		} else if(i.substr(0,1)==='>') {
+			block.push(i);
+//			console.log('pushing, '+block.length)
+		} else {
+//			console.log(i.substr(0,2));
+//			console.log(block.length);
+			pblock(); plist();
+//			if(paraing && i.length>0) {
+//				console.log(i);
+//				i = '    '+i//final.push({arr:['   '], type:'s'})
+//			}
+			final.push({arr:i, type:'s'+(paraing?'p':'')});
+		}
+		if(paraing)paraing = false;
+//		console.log(block.length, i, 'finishing....')
+	}
+	pblock()
+	plist()
+//	console.log(list)
+	return typeSelect(final);
+}
+
+function formatHead(txt){
+	const sizes = [36, 29, 23, 18]
+	for(var i=0;i<sizes.length; i++){
+		if(txt[i]!=='#'){
+			break;
+		}
+	}
+//	console.log(txt, txt.substr(i))
+	return ('<div style="font-weight:bold;line-height: initial; font-size:'+sizes[i-1]*size+"px; margin-bottom:"+0*size+"px; margin-top:"+30*sizes[i-1]/62*size+"px; padding-left:"+15*size+'px; padding-right:'+15*size+'px">'+txt.substr(i)+'</div>')
+}
+
+function typeSelect(arr){
+	var final = []
+	for(let i of arr){
+//		if(i.type!=='s') console.log(i);
+		if(i.type==='h')
+			final.push(formatHead(i.arr));
+		else if(i.type==='b'){
+//			console.log('formatting...', joinArr(i.arr));
+			final.push(
+				'<div style="border-width:0px 0px 0px '+10*size+'px; border-color:#e3afff; border-style: solid; margin-left:'+20*size+'px; margin-right:'+20*size+'px; background-color:#00448817">'+format(joinArr(i.arr, 1))+'</div>'
+			)
+		}
+		else if(i.type==='l'){
+			final.push(formatList(i.arr))
+		}
+		
+		else {
+			final.push('<div style="padding-left:'+15*size+'px; padding-right:'+15*size+'px; font-size:'+17*size+'px">'+formatStyles(joinArr(i.arr))+'</div>')
+		}
+	}
+
+	return final.reduce((s,i) => s+i, '');
+}
+
+function formatList(arr){
+	var final = [];
+	var last = 0;
+	var k = [0];
+	/*try{*/arr.forEach((i) => {
+		var j=0;
+		for(j=0;j<i.length;j++){
+			if(i[j]!=='+'&&i[j]!=='-'/*&&i[j]!=='*'&&i[j]!=='^'*/) break;
+		}
+		if(!k[j-1])k.push(0)
+		while(k.length>j) k.pop();
+//		console.log(k,j,i.substr(0,j))
+//		last = j-1
+		final.push({j, i:i.substr(j), k:k[j-1], t:i[0]})
+		k[j-1]++
+	});//}catch(e){console.log(e, arr, o);}
+//	console.log(final);
+	const returner = final.reduce((s, i) => {
+			return (
+				s+`<div style="flex-direction:row; display: flex; margin-vertical:0; padding-left:${25*size}px; margin-left:${15*size}; margin-right: ${15*size}px; border-width:0">
+					<div style="display: flex; margin-left:${(i.j-1)*30*size}px; padding-top:${0*size}px; border-width:0; align-items:center; justify-content:center">
+						${i.t!=='-'?
+							`<div style="font-size:${17*size}px">${(i.k+1)}.</div>`
+						:
+							`<div style="height:${6*size}px; width:${6*size}px; border-radius:${4*size}px; background-color:#000" ></div>`
+						}
+					</div>
+					<div style="flex:1">${format(i.i)}</div>
+				</div>`
+			);
+	}, '');
+//	console.log(returner);
+	return returner
+}
+function joinArr(arr, start){
+//	console.log(arr, typeof arr)
+	if(typeof arr==='string') return arr
+	return arr.reduce(function(s, i, ind){return (s+(ind?'\n':'')+(start?i.substr(start):i))}, '')
+}
+
+function formatStyles(txt){
+	var final = [];
+	//console.log(txt)
+//	var arr = txt.split('');
+	var tn = '';
+	var state = 0;
+	for(var ii=0; ii<txt.length; ii++){
+		var i = txt[ii];
+		var count = 0;
+		if(i==='*'){
+			count = 1;
+//			if(!state) console.log('starting at ',ii, state)
+			for(var k=ii; k<ii+(state?state:3); k++){
+				if(txt[k+1]==='*') count++;
+				else {
+					if(state) {
+//						console.log('ended at',k, state, tn)
+						if(state===count){
+							final.push({tn, state});
+							tn = '';
+							state = 0
+						}else {
+							console.warn("Opened with "+state+" * and closed with "+count+" *, (closed after "+txt.substr(ii-10, 10)+')')
+							return txt;
+						}
+					} else {
+						final.push({tn, state})
+						tn = ''
+						state = count;
+					}
+//					console.log(k, ii)
+					ii = k;
+					break;
+				}
+			}
+		} else {
+			tn+=i;
+		}
+	}
+	final.push({tn, state});
+//	console.log(final.map(i => i.tn.indexOf('\\\\\\')))
+	//console.log(final);
+	const atlast = (final.reduce((s,i) => {
+		return s+(i.state?
+			(i.state===3||i.state===1?'<b>':'')+(i.state===2||i.state===3?'<i>':'')+i.tn.replace('\\\\\\', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(/&star;/gi, '*').replace(/&backslash;/gi, '\\')+(i.state===3||i.state===1?'</b>':'')+(i.state===2||i.state===3?'</i>':'')
+		:
+			i.tn.replace('\\\\\\', '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;').replace(/&backslash;/gi, '\\').replace(/&star;/gi, '*'))
+	}, ''))
+	if(atlast.length===0) return '&nbsp;'
+	return atlast
+}
+		</script>
+		<script>
+function a(){
+	document.getElementById('hello').innerHTML = format(document.getElementById('ip').value);
+}
+function getOption(option){
+	var ops = location.search.substr(1).split('&')
+	for(let i of ops){
+		var op = i.split('=');
+		if(op[0]===option) return decodeURI(op[1]); 
+	}
+	return null
+}
+
+function save(){
+	const coll = getOption('collection');
+	const doc = getOption('document');
+	const toSave = document.getElementById("ip").value;
+	if(!toSave || !toSave.length) {
+		alert('The document is empty. Can\'t save an empty document.');
+		return;
+	}
+	db.collection(coll).doc(doc).set({data:toSave}).then(function(){alert("Saved.")}).catch(function (e){alert('Error occurred while saving:'+e.message)});
+}
+
+function doit(){
+	const coll = getOption('collection');
+	const doc = getOption('document');
+	
+	const loader = document.getElementById("load")
+	function ab(){
+		console.log('ab');
+		if(loader)
+			loader.parentNode.removeChild(loader);
+		document.body.innerHTML = '<div style="padding: 20px;">Sorry, document not found</div>'
+	}
+	if(!coll || !doc) {
+		ab();return;
+	}
+
+	db.collection(coll).doc(doc).get().then(s => {
+		if(s.exists){
+//			console.log(s.data());
+			if(loader)
+				loader.parentNode.removeChild(loader);
+			document.getElementById('ip').value = s.data().data; a();
+		} else {
+			ab(); return;
+		}
+	})
+}
+		</script>
+	</head>
+	<body style="overflow:hidden;">
+	<div style="display: flex; flex-direction: row; font-family: sans-serif; line-height: 1.35em;">
+		<div style="flex:1; padding:20; display: flex; flex-direction: column;">
+			<textarea id="ip" style="flex:1; width: 100%;" oninput="a()"></textarea>
+			<div style="display: flex; margin-top:5px;">
+				<div style="flex:3"></div>
+				<button onclick="const reset = confirm('Are you sure to reset? All your current edits will be lost.'); if(reset) doit();" style="font-size:15px; flex:1; padding-top: 10px; padding-bottom: 10px; margin-right:2px; font-weight: bold; background-color:#fdd; border-radius: 5px;padding-left:20px; padding-right:20px;">Reset</button>
+				<button onclick="const sav=confirm('Are you sure to save this document? You wont be able to reset to the old version.'); if(sav) save()" style="font-size:15px; flex:1; padding-top: 10px; padding-bottom: 10px; margin-left:2px; color:#000; font-weight: bold;background-color:#dfd; border-radius: 5px; padding-left: 20px; padding-right:20px;">Save</button>
+			</div>
+		</div>
+		<div style="height:95vh; width:50vh; background-color:#000; align-self: center; border-radius: 5vh; display: flex;">
+			<div style="flex:1; margin:7vh 2vh 7vh 2vh; background-color:#fff; overflow-y: scroll; padding-top:0px;">
+				<div id="hello">
+				</div>
+			</div>
+		</div>
+		</div>
+		<div id="load" style="position:absolute; background-color: #fff7; display: flex; align-items: center; justify-content: center;top:0; left:0; right:0; bottom:0;">
+		<div class='loader'></div>
+		</div>
+		<script>
+//const loaderRound = document.getElementsByClassName("loader")[0]
+
+//loaderRound.style['border'] = 'initial'
+//loaderRound.style['border'] = '5px solid #ccc'
+//loaderRound.style['border-left'] = 'initial'
+
+//loaderRound.setAttribute('style.width', '30px');
+//loaderRound.setAttribute('style.height', '30px');
+//loader.parentNode.removeChild(loader)
+doit();
+		</script>
+	</body>
+</html>
