@@ -1,0 +1,233 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Student Details Adder</title>
+		<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-firestore.js"></script>
+		<script>
+var firebaseConfig = {
+	apiKey: "AIzaSyDsQxF3m_SqRGSKrEe48RfPTRHWb_TjKnY",
+	authDomain: "nsssimat-233.firebaseapp.com",
+	databaseURL: "https://nsssimat-233.firebaseio.com",
+	projectId: "nsssimat-233",
+	storageBucket: "nsssimat-233.appspot.com",
+	messagingSenderId: "839441345804",
+	appId: "1:839441345804:web:47dc358189081ad7dfad29",
+	measurementId: "G-4EP88P3ZE8"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+var uploaded = [];
+var db = firebase.firestore();
+		</script>
+<style>
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.loader {
+  margin: 60px auto;
+  font-size: 5px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-right: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-left: 1.5em solid #00000055;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 0.8s infinite linear;
+  animation: load8 0.8s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+</style>
+<style>
+body {
+	display: flex;
+	padding: 0;
+	margin: 0;
+}
+.inputSide {
+	background-color:#ddf;
+	width: 30%;
+	max-width: 200;
+	padding: 20;
+	justify-content: center;
+	display: flex;
+	flex-direction: column;
+}
+form {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+.reg {
+	width: 100%;
+	height: 2em;
+}
+.hourInput {
+	height: 2em;
+	width: 5em;
+	margin-left: auto;
+}
+form {
+	display: flex;
+	flex-direction: column;
+
+}
+.hourDiv {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.submit {
+	margin-top: 10;
+	padding-top: 10;
+	padding-bottom: 10;
+	font-size: 15;
+	font-weight: bold;
+	color: #fff;
+	background-color: #85f;
+	border-width: 0;
+	border-radius: 5px;
+}
+.data{
+	flex:1;
+	background-color: #f7f7f7;
+}
+.user {
+	display: flex;
+	padding: 5;
+	border-width: 0;
+	border-bottom-width: 0.5;
+	border-style: solid;
+
+}
+.firstColumn {
+	flex:2;
+}
+.column{
+	flex:1;
+	text-align: center;
+}
+</style>
+	<script>
+//console.log(navigator)
+function submitnow(){
+	const reg = document.regForm.reg;
+	const campus = document.regForm.campus;
+	const community = document.regForm.community;
+	const orientation = document.regForm.orientation;
+
+	if(!parseInt(reg.value)>0){
+	   	alert('Enrollment number not given!');
+		return false;
+	}
+
+//	console.log(parseInt(campus.value)>0);
+	const campusValue = parseInt(campus.value);
+	const communityValue = parseInt(community.value);
+	const orientationValue = parseInt(orientation.value);
+	if(!campusValue>0 || !communityValue>0 || !orientationValue>0){
+		alert('Fill attendence details please');
+		return false;
+	}
+	document.getElementById('load').style.display = 'flex';
+	db.collection('users').doc(reg.value).set({attendence: {community:communityValue, campus:campusValue, orientation:orientationValue}}).then(() => {
+		document.getElementById('load').style.display = 'none'
+		console.log(campus.focus, typeof campus.focus);
+		campus.focus();
+	}).catch(error => {
+		document.getElementById('load').style.display = 'none'
+		alert("Some error occurred, couldn't upload data.");
+		console.log(error)
+	})
+
+
+	reg.value = ++reg.value;
+	campus.value = 0;
+	community.value = 0;
+	orientation.value = 0;
+
+	return false;
+}
+function rowify(arr, childrenOnly){
+	return `
+		${childrenOnly?'':'<div class="user" id="'+arr[0]+'">'}
+			<div class="firstColumn">${arr[0]}</div>
+			<div class="column">${arr[1]}</div>
+			<div class="column">${arr[2]}</div>
+			<div class="column">${arr[3]}</div>
+		${childrenOnly?'':'</div>'}
+	`
+}
+	</script>
+	</head>
+	<body>
+		<div class="inputSide">
+			<form  name="regForm" onsubmit="return submitnow();" >
+				<div style="text-align:center;font-size: 25; font-weight: bold">Volunteer Details</div><br><br>
+				<div class="hourDiv">Enroll. no:<input class="hourInput" style="width: 7em;" autofocus type="number" name='reg' ><br><br></div></br>
+				<div class="hourDiv">Campus:<input class="hourInput" type="number" name='campus' ><br><br></div>
+				<div class="hourDiv">Community:<input class="hourInput" type="number" maxLength="999" name='community' ><br><br></div>
+				<div class="hourDiv">Orientation:<input class="hourInput" type="number" max='999' name='orientation' ><br><br></div>
+				<!--<input type="button" class="submit" value="Save" onclick="submitnow()">-->
+				<input type="submit" class="submit" value="Save">
+			</form>
+		</div>
+		<div class='data' id='data'>
+			<div class="user" style="font-weight: bold; border-bottom-width:1">
+				<div class="firstColumn" style="">Enroll. No</div>
+				<div class="column" style="">Campus</div>
+				<div class="column" style="">Comunity</div>
+				<div class="column" style="">Orientation</div>
+			</div>
+		</div>
+		<div id="load" style="position:absolute; background-color: #fff7; display: none; align-items: center; justify-content: center;top:0; left:0; right:0; bottom:0;">
+		<div class='loader'></div>
+		</div>
+	</body>
+	<script>
+//document.getElementById('data').innerHTML = rowify(['Enroll. no', 'Campus', 'Community', 'Orientation'])
+db.collection("users").onSnapshot(function(snapshot) {
+//	if(snapshot.metadata.hasPendingWrites) return;
+	snapshot.docChanges().forEach(function(change) {
+//		console.log(change);
+		if(!change.doc.data().attendence) return;
+		const {campus, community, orientation} = change.doc.data().attendence;
+		const _id = change.doc.id;
+		if (change.type === "added") {
+			document.getElementById('data').innerHTML += rowify([_id,campus, community, orientation]);
+        }
+        if (change.type === "modified") {
+			document.getElementById(_id).innerHTML = rowify([_id,campus, community, orientation], true);
+        }
+        if (change.type === "removed") {
+			document.getElementById(_id).remove();
+        }
+    });
+});
+	</script>
+</html>
