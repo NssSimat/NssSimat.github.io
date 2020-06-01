@@ -69,6 +69,7 @@ body {
 	display: flex;
 	padding: 0;
 	margin: 0;
+	height: 100%;
 }
 .inputSide {
 	background-color:#ddf;
@@ -116,6 +117,8 @@ form {
 .data{
 	flex:1;
 	background-color: #f7f7f7;
+	height: 100%;
+	overflow-y: scroll;
 }
 .user {
 	display: flex;
@@ -157,8 +160,8 @@ function submitnow(){
 	document.getElementById('load').style.display = 'flex';
 	db.collection('users').doc(reg.value).set({attendence: {community:communityValue, campus:campusValue, orientation:orientationValue}}).then(() => {
 		document.getElementById('load').style.display = 'none'
-		console.log(campus.focus, typeof campus.focus);
-		campus.focus();
+//		console.log(campus.focus, typeof campus.focus);
+		reg.focus();
 	}).catch(error => {
 		document.getElementById('load').style.display = 'none'
 		alert("Some error occurred, couldn't upload data.");
@@ -166,7 +169,7 @@ function submitnow(){
 	})
 
 
-	reg.value = ++reg.value;
+	reg.value = parseInt(reg.value)+10000;
 	campus.value = 0;
 	community.value = 0;
 	orientation.value = 0;
