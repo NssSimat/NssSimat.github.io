@@ -1,0 +1,113 @@
+<html>
+	<head>
+		<title>Blood Donors List</title>
+<script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-firestore.js"></script>
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDsQxF3m_SqRGSKrEe48RfPTRHWb_TjKnY",
+    authDomain: "nsssimat-233.firebaseapp.com",
+    databaseURL: "https://nsssimat-233.firebaseio.com",
+    projectId: "nsssimat-233",
+    storageBucket: "nsssimat-233.appspot.com",
+    messagingSenderId: "839441345804",
+    appId: "1:839441345804:web:47dc358189081ad7dfad29",
+    measurementId: "G-4EP88P3ZE8"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+var uid = '';
+
+function editResponse(){
+	document.getElementById('form').style.display = 'block';
+	document.getElementById('submitted').style.display = 'none';
+}
+function verify(){
+	let name = document.reg.name;
+	let phone = document.reg.phone;
+	let email = document.reg.email;
+	let group = document.reg.group;
+	let city = document.reg.city;
+
+	function warn(type){
+		alert('Please enter a valid '+type);
+	}
+	function doNow(){
+		var toSet = {
+			name: name.value,
+			phone: phone.value,
+			email: email.value,
+			group: group.value,
+			city: city.value
+		};
+		console.log(toSet, 'toSet');
+		document.getElementById('submitted').style.display = 'block';
+	}
+
+	if(name.value.length){
+		if(phone.value.length || !isNan(parseInt(phone.value))){
+			if(email.value.length){
+				if(group.value){
+					if(city.length){
+						doNow();
+					} else warn('city name');
+				} else warn('blood group');
+			} else warn('email');
+		}else warn('phone number');
+	} else warn('full name')
+	return false;
+}
+
+</script>
+	</head>
+	<body>
+<form onSubmit="return verify()">
+	<input type="text" name="name" ><br>
+	<input type="number" name="phone" ><br>
+	<input type="text" name="email" ><br>
+	<input type="text" name="group" ><br>
+	<input type="text" name="city" ><br>
+	<input type="submit" value="upload">
+</form>
+	<script>
+
+function init(){
+	auth.onAuthStateChanged(function(user){
+		if(user) {
+			console.log('logged in = ', user.uid, user, typeof user);
+			uid = user.uid;
+			db.collection('blooddonors').doc(user.uid).get().then(snap => {
+				console.log('got data!');
+				if(snap.exists){
+					let data = snap.data();
+					document.reg.name.value = data.name;
+					document.reg.phone.value = data.phone;
+					document.reg.email.value = data.email;
+					document.reg.group.value = data.group;
+					document.reg.city.value = data.city;
+
+					document.getElementById('submitted').style.display = 'block';
+
+				} else {
+					document.getElementById('enter').style.display = 'block';
+				}
+				document.getElementById('loading').style.display = 'none';
+			});
+		} else {
+			auth.signInAnonymously()
+			console.log('not logged in');
+		}
+	});
+}
+init();
+//function verify(){
+//
+//	return false;
+//}
+	</script>
+	</body>
+</html>
