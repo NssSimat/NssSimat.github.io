@@ -111,6 +111,8 @@ function verify(){
 		let group = document.reg.group;
 		let city = document.reg.city;
 		let type = document.reg.type;
+		let age = document.reg.age;
+		let weight = document.reg.weight;
 		let dept = document.reg.dept;
 
 		function warn(typeerror, option){
@@ -129,6 +131,8 @@ function verify(){
 				group: group.value,
 				city: city.value,
 				type: type.value,
+				age: age.value,
+				weight: weight.value,
 				dept: dept.value,
 			};
 			console.log(toSet, 'toSet');
@@ -137,18 +141,22 @@ function verify(){
 				document.getElementById('load').style.display = 'none'
 			});
 		}
-
+		const isNumberOk = numToCheck => numToCheck.value.length && !isNaN(parseInt(numToCheck.value)) && parseInt(numToCheck.value)+''==numToCheck.value
 		if(name.value.length){
-			if(phone.value.length && !isNaN(parseInt(phone.value)) && parseInt(phone.value)+''==phone.value){
+			if(isNumberOk(phone)){
 				if(email.value.length){
 					if(group.value){
-						if(city.value.length){
-							if(dept.value){
-								if(type.value){
-									doNow();
-								} else warn("Please let us know if you are a staff or a student", 2);
-							} else warn('department', 'select');
-						} else warn('city name');
+						if(isNumberOk(age)){
+							if(isNumberOk(weight)){
+								if(city.value.length){
+									if(dept.value){
+										if(type.value){
+											doNow();
+										} else warn("Please let us know if you are a staff or a student", 2);
+									} else warn('department', 'select');
+								} else warn('city name');
+							} else warn('weight');
+						} else warn('age');
 					} else warn('blood group', 'select');
 				} else warn('email');
 			}else warn('phone number');
@@ -168,7 +176,7 @@ function verify(){
 	<body>
 <div id="form" style="display: none; padding-top:0; padding-bottom: 0;">
 <div style="display: flex; width: 100%; justify-content: center;">
-<div style="padding:40; background-color:#4fa">
+<div style="padding:40; background-color:#fdd">
 <h1>Blood Donor's List, SIMAT</h1>
 	<form onSubmit="return verify()" style="" name="reg">
 		<label for="name">Full Name:</label>
@@ -201,6 +209,12 @@ function verify(){
 		<label for="O+">O+</label><br>
 			</div>
 		</div><br>
+
+		<label for="age">Age:</label>
+		<input type="number" name="age" ><br><br>
+
+		<label for="weight">Weight:</label>
+		<input type="number" name="weight" ><br><br>
 
 		<label for="city">Nearest City:</label>
 		<input type="text" name="city" ><br><br>
@@ -267,6 +281,8 @@ function init(){
 					document.reg.city.value = data.city;
 					document.reg.type.value = data.type;
 					document.reg.dept.value = data.dept;
+					document.reg.age.value = data.age;
+					document.reg.weight.value = data.weight;
 
 					document.getElementById('submitted').style.display = 'block';
 
