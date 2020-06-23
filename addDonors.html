@@ -107,10 +107,16 @@ function verify(){
 		let email = document.reg.email;
 		let group = document.reg.group;
 		let city = document.reg.city;
+		let type = document.reg.type;
+		let dept = document.reg.dept;
 
-		function warn(type){
+		function warn(typeerror, option){
 			revert();
-			setTimeout(() => alert('Please enter a valid '+type), 10);
+			setTimeout(() => {
+				if(!option || typeof option==='string') alert('Please '+(option?option:'enter')+' a valid '+typeerror)
+				else alert(typeerror);
+			}, 10);
+			return false;
 		}
 		function doNow(){
 			var toSet = {
@@ -118,7 +124,9 @@ function verify(){
 				phone: phone.value,
 				email: email.value,
 				group: group.value,
-				city: city.value
+				city: city.value,
+				type: type.value,
+				dept: dept.value,
 			};
 			console.log(toSet, 'toSet');
 			db.collection('blooddonors').doc(uid).set(toSet).then(() => { 
@@ -132,9 +140,13 @@ function verify(){
 				if(email.value.length){
 					if(group.value){
 						if(city.value.length){
-							doNow();
+							if(dept.value){
+								if(type.value){
+									doNow();
+								} else warn("Please let us know if you are a staff or a student", 2);
+							} else warn('department', 'select');
 						} else warn('city name');
-					} else warn('blood group');
+					} else warn('blood group', 'select');
 				} else warn('email');
 			}else warn('phone number');
 		} else warn('full name')
@@ -142,6 +154,7 @@ function verify(){
 	} catch(err){
 		document.getElementById('form').style.display = 'block'
 		document.getElementById('load').style.display = 'none'
+		alert('Sorry, something went wrong. Please try again. If this problem persists, please contact NSS Program Officer');
 		console.log('error', err);
 		return false;
 	}
@@ -188,6 +201,37 @@ function verify(){
 
 		<label for="city">Nearest City:</label>
 		<input type="text" name="city" ><br>
+
+		<div style="display: block;">Staff or Student:</div><br>
+		<div class="groupBlock">
+			<div class="column">
+				<input type="radio" value="Staff" name="type" >
+				<label for="Staff">Staff</label><br>
+			</div>
+			<div class="column">
+				<input type="radio" value="Student" name="type" >
+				<label for="Student">Student</label><br>
+			</div>
+		</div>
+
+		<div style="display: block;">Department:</div><br>
+		<div class="groupBlock">
+			<div class="column">
+		<input type="radio" value="EEE" name="dept" >
+		<label for="EEE">EEE</label><br>
+		<input type="radio" value="ME" name="dept" >
+		<label for="ME">ME</label><br>
+		<input type="radio" value="CSE" name="dept" >
+		<label for="CSE">CSE</label><br>
+			</div>
+			<div class="column">
+		<input type="radio" value="ECE" name="dept" >
+		<label for="ECE">ECE</label><br>
+		<input type="radio" value="CE" name="dept" >
+		<label for="CE">CE</label><br>
+			</div>
+		</div>
+
 		<input class="submit" type="submit" value="Upload">
 	</form>
 </div>
@@ -218,6 +262,8 @@ function init(){
 					document.reg.email.value = data.email;
 					document.reg.group.value = data.group;
 					document.reg.city.value = data.city;
+					document.reg.type.value = data.type;
+					document.reg.dept.value = data.dept;
 
 					document.getElementById('submitted').style.display = 'block';
 
@@ -240,9 +286,9 @@ function init1(){
 	}
 	document.getElementById('load').style.display = 'none';
 }
-//setTimeout(init1, 50);
+setTimeout(init1, 50);
 
-init();
+//init();
 
 //function verify(){
 //
