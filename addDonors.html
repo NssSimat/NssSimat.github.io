@@ -24,8 +24,11 @@ input {
 .groupBlock {
 	display: flex;
 	flex-direction: row;
-	justify-content: space-around;
-	margin: 0px 10px;
+/*	justify-content: space-around;*/
+	margin: 0px 10px 0px 0px;
+}
+.column2 {
+	margin-left: 60;
 }
 </style>
 <style>
@@ -169,15 +172,15 @@ function verify(){
 <h1>Blood Donor's List, SIMAT</h1>
 	<form onSubmit="return verify()" style="" name="reg">
 		<label for="name">Full Name:</label>
-		<input type="text" name="name" ><br>
+		<input type="text" name="name" ><br><br>
 		<label for="phone">Phone Number:</label>
-		<input type="tel" name="phone" ><br>
+		<input type="tel" name="phone" ><br><br>
 		<label for="email">Email address:</label>
 		<input type="text" name="email" ><br><br>
 
 		<div style="display: block;">Blood Group:</div><br>
 		<div class="groupBlock">
-			<div class="column">
+			<div class="column1">
 		<input type="radio" value="A-" name="group" >
 		<label for="A-">A-</label><br>
 		<input type="radio" value="B-" name="group" >
@@ -187,7 +190,7 @@ function verify(){
 		<input type="radio" value="O-" name="group" >
 		<label for="O-">O-</label><br>
 			</div>
-			<div class="column">
+			<div class="column2">
 		<input type="radio" value="A+" name="group" >
 		<label for="A+">A+</label><br>
 		<input type="radio" value="B+" name="group" >
@@ -197,26 +200,26 @@ function verify(){
 		<input type="radio" value="O+" name="group" >
 		<label for="O+">O+</label><br>
 			</div>
-		</div>
+		</div><br>
 
 		<label for="city">Nearest City:</label>
-		<input type="text" name="city" ><br>
+		<input type="text" name="city" ><br><br>
 
 		<div style="display: block;">Staff or Student:</div><br>
 		<div class="groupBlock">
-			<div class="column">
+			<div class="column1">
 				<input type="radio" value="Staff" name="type" >
 				<label for="Staff">Staff</label><br>
 			</div>
-			<div class="column">
+			<div class="column2">
 				<input type="radio" value="Student" name="type" >
 				<label for="Student">Student</label><br>
 			</div>
-		</div>
+		</div><br>
 
 		<div style="display: block;">Department:</div><br>
 		<div class="groupBlock">
-			<div class="column">
+			<div class="column1">
 		<input type="radio" value="EEE" name="dept" >
 		<label for="EEE">EEE</label><br>
 		<input type="radio" value="ME" name="dept" >
@@ -224,13 +227,13 @@ function verify(){
 		<input type="radio" value="CSE" name="dept" >
 		<label for="CSE">CSE</label><br>
 			</div>
-			<div class="column">
+			<div class="column2">
 		<input type="radio" value="ECE" name="dept" >
 		<label for="ECE">ECE</label><br>
 		<input type="radio" value="CE" name="dept" >
 		<label for="CE">CE</label><br>
 			</div>
-		</div>
+		</div><br>
 
 		<input class="submit" type="submit" value="Upload">
 	</form>
