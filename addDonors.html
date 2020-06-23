@@ -1,9 +1,77 @@
 <html>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<head>
 		<title>Blood Donors List</title>
 <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-firestore.js"></script>
+<style>
+body {
+	background-color: #fff;
+}
+input {
+	margin-bottom: 10px;
+	margin-top: 2px;
+	padding: 5px;
+	width: -webkit-fill-available;
+}
+.submit {
+	min-width: 30px;
+	font-size: 14px;
+	padding: 5px 50px;
+	font-weight: normal;
+}
+.groupBlock {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	margin: 0px 10px;
+}
+</style>
+<style>
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.loader {
+  margin: 60px auto;
+  font-size: 5px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-right: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-left: 1.5em solid #00000055;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 0.8s infinite linear;
+  animation: load8 0.8s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+</style>
 <script>
   // Your web app's Firebase configuration
   var firebaseConfig = {
@@ -27,52 +95,113 @@ function editResponse(){
 	document.getElementById('submitted').style.display = 'none';
 }
 function verify(){
-	let name = document.reg.name;
-	let phone = document.reg.phone;
-	let email = document.reg.email;
-	let group = document.reg.group;
-	let city = document.reg.city;
-
-	function warn(type){
-		alert('Please enter a valid '+type);
+	document.getElementById('form').style.display = 'none'
+	document.getElementById('load').style.display = 'flex'
+	function revert(){
+		document.getElementById('form').style.display = 'block'
+		document.getElementById('load').style.display = 'none'
 	}
-	function doNow(){
-		var toSet = {
-			name: name.value,
-			phone: phone.value,
-			email: email.value,
-			group: group.value,
-			city: city.value
-		};
-		console.log(toSet, 'toSet');
-		document.getElementById('submitted').style.display = 'block';
-	}
+	try {
+		let name = document.reg.name;
+		let phone = document.reg.phone;
+		let email = document.reg.email;
+		let group = document.reg.group;
+		let city = document.reg.city;
 
-	if(name.value.length){
-		if(phone.value.length || !isNan(parseInt(phone.value))){
-			if(email.value.length){
-				if(group.value){
-					if(city.length){
-						doNow();
-					} else warn('city name');
-				} else warn('blood group');
-			} else warn('email');
-		}else warn('phone number');
-	} else warn('full name')
-	return false;
+		function warn(type){
+			revert();
+			setTimeout(() => alert('Please enter a valid '+type), 10);
+		}
+		function doNow(){
+			var toSet = {
+				name: name.value,
+				phone: phone.value,
+				email: email.value,
+				group: group.value,
+				city: city.value
+			};
+			console.log(toSet, 'toSet');
+			db.collection('blooddonors').doc(uid).set(toSet).then(() => { 
+				document.getElementById('submitted').style.display = 'block';
+				document.getElementById('load').style.display = 'none'
+			});
+		}
+
+		if(name.value.length){
+			if(phone.value.length && !isNaN(parseInt(phone.value)) && parseInt(phone.value)+''==phone.value){
+				if(email.value.length){
+					if(group.value){
+						if(city.value.length){
+							doNow();
+						} else warn('city name');
+					} else warn('blood group');
+				} else warn('email');
+			}else warn('phone number');
+		} else warn('full name')
+		return false;
+	} catch(err){
+		document.getElementById('form').style.display = 'block'
+		document.getElementById('load').style.display = 'none'
+		console.log('error', err);
+		return false;
+	}
 }
 
 </script>
 	</head>
 	<body>
-<form onSubmit="return verify()">
-	<input type="text" name="name" ><br>
-	<input type="number" name="phone" ><br>
-	<input type="text" name="email" ><br>
-	<input type="text" name="group" ><br>
-	<input type="text" name="city" ><br>
-	<input type="submit" value="upload">
-</form>
+<div id="form" style="display: none; padding-top:0; padding-bottom: 0;">
+<div style="display: flex; width: 100%; justify-content: center;">
+<div style="padding:40; background-color:#4fa">
+<h1>Blood Donor's List, SIMAT</h1>
+	<form onSubmit="return verify()" style="" name="reg">
+		<label for="name">Full Name:</label>
+		<input type="text" name="name" ><br>
+		<label for="phone">Phone Number:</label>
+		<input type="tel" name="phone" ><br>
+		<label for="email">Email address:</label>
+		<input type="text" name="email" ><br><br>
+
+		<div style="display: block;">Blood Group:</div><br>
+		<div class="groupBlock">
+			<div class="column">
+		<input type="radio" value="A-" name="group" >
+		<label for="A-">A-</label><br>
+		<input type="radio" value="B-" name="group" >
+		<label for="B-">B-</label><br>
+		<input type="radio" value="AB-" name="group" >
+		<label for="AB-">AB-</label><br>
+		<input type="radio" value="O-" name="group" >
+		<label for="O-">O-</label><br>
+			</div>
+			<div class="column">
+		<input type="radio" value="A+" name="group" >
+		<label for="A+">A+</label><br>
+		<input type="radio" value="B+" name="group" >
+		<label for="B+">B+</label><br>
+		<input type="radio" value="AB+" name="group" >
+		<label for="AB+">AB+</label><br>
+		<input type="radio" value="O+" name="group" >
+		<label for="O+">O+</label><br>
+			</div>
+		</div>
+
+		<label for="city">Nearest City:</label>
+		<input type="text" name="city" ><br>
+		<input class="submit" type="submit" value="Upload">
+	</form>
+</div>
+</div>
+</div>
+<div id="submitted" style="display: none;padding:15;">
+<h1>Blood Donor's List, SIMAT</h1>
+Your response have been saved.<br>
+<!--<button style="background-color:#fff; border-style: none; color:#00a; text-decoration: underline; margin-top:10" onclick="document.getElementById('submitted').style.display = 'none'; document.getElementById('form').style.display = 'block'">&nbsp;Edit Response&nbsp;</button>-->
+<a href="#" onclick="document.getElementById('submitted').style.display = 'none'; document.getElementById('form').style.display = 'block'">Edit Response</a>
+</div>
+<div id="load" style="display: flex; position:absolute; background-color: #fff7; align-items: center; justify-content: center;top:0; left:0; right:0; bottom:0;">
+	<div class='loader'></div>
+</div>
 	<script>
 
 function init(){
@@ -93,9 +222,9 @@ function init(){
 					document.getElementById('submitted').style.display = 'block';
 
 				} else {
-					document.getElementById('enter').style.display = 'block';
+					document.getElementById('form').style.display = 'block';
 				}
-				document.getElementById('loading').style.display = 'none';
+				document.getElementById('load').style.display = 'none';
 			});
 		} else {
 			auth.signInAnonymously()
@@ -103,7 +232,18 @@ function init(){
 		}
 	});
 }
+function init1(){
+	if(false){
+		document.getElementById('submitted').style.display = 'block';
+	} else {
+		document.getElementById('form').style.display = 'block';
+	}
+	document.getElementById('load').style.display = 'none';
+}
+//setTimeout(init1, 50);
+
 init();
+
 //function verify(){
 //
 //	return false;
