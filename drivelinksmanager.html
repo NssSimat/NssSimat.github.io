@@ -1,0 +1,99 @@
+<html>
+	<head>
+		<title>Hello</title>
+<style>
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.loader {
+  margin: 60px auto;
+  font-size: 5px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-right: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-left: 1.5em solid #00000055;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 0.8s infinite linear;
+  animation: load8 0.8s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+</style>
+<style>
+body {
+	margin: 0;
+}
+.leftColumn {
+	border-width: 1;
+	border-color: #000;
+	padding-top: 30;
+	padding-left: 15;
+	padding-right: 15;
+	padding-bottom: 30;
+}
+.rightColumn {
+	flex: 1;
+	border-left-width: 1;
+	border-color: #aaa;
+	border-left-style: solid;
+}
+input {
+	width: -webkit-fill-available;
+	margin-bottom: 15;
+	padding: 5;
+}
+</style>
+	</head>
+	<body>
+<div id="main" style="display: none; height:100%; width: 100%;">
+	<div class="leftColumn">
+		<form name="frm">
+			<label for="title">Title:</label>
+			<input type="text" name="title" /><br>
+			<label for="about">Short Description:</label>
+			<input type="text" name="about" /><br>
+			<label for="link">Link:</label>
+			<input type="text" name="link" /><br>
+			<input type="submit" value="Save" />
+		</form>
+	</div>
+	<div class="rightColumn">
+	</div>
+</div>
+<div id="load" style="display: flex; position:absolute; background-color: #fff7; align-items: center; justify-content: center;top:0; left:0; right:0; bottom:0;">
+	<div class='loader'></div>
+</div>
+	<script>
+setTimeout(function (){
+	document.getElementById('main').style.display = 'flex';
+	document.getElementById('load').style.display = 'none';
+}, 100);
+	</script>
+	</body>
+</html>
