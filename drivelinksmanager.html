@@ -66,34 +66,169 @@ body {
 input {
 	width: -webkit-fill-available;
 	margin-bottom: 15;
+	margin-top: 5;
 	padding: 5;
 }
+form {
+	min-width: 25em;
+	margin: 0 auto 0 auto;
+}
+.listElement {
+	padding: 20;
+	border-style: solid;
+	border-width: 0 0 1 0;
+	border-color: #aaa;
+	display: flex;
+}
+.listElement:hover{
+	background-color: #eee;
+}
+.listElementMain {
+	flex: 1;
+}
+.listElementAnchor {
+	margin-left: 15;
+}
+.listItemAbout {
+	font-size: 15;
+	font-color: #555;
+}
+.listItemHeading {
+	font-size: 20;
+	font-weight: bold;
+	margin-bottom: 5;
+}
+.formCancel {
+	align-self: center;
+}
 </style>
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyDsQxF3m_SqRGSKrEe48RfPTRHWb_TjKnY",
+    authDomain: "nsssimat-233.firebaseapp.com",
+    databaseURL: "https://nsssimat-233.firebaseio.com",
+    projectId: "nsssimat-233",
+    storageBucket: "nsssimat-233.appspot.com",
+    messagingSenderId: "839441345804",
+    appId: "1:839441345804:web:47dc358189081ad7dfad29",
+    measurementId: "G-4EP88P3ZE8"
+  };
+  firebase.initializeApp(firebaseConfig);
+//  firebase.analytics();
+const db = firebase.firestore();
+</script>
+	<script>
+var allDatas = {};
+var crntData = null;
+var type= '';
+async function save(){
+	document.getElementById('load').style.display = 'flex';
+	const forms = document.forms.frm;
+	var keys = ['title', 'subtitle', 'url'];
+	var toSave = {};
+	toSave[crntData] = {};
+	for(let i of keys){
+		toSave[crntData][i] = forms[i].value;
+	}
+	await db.collection('users').doc('233').collection('drive').doc(type).update(toSave);
+	allDatas[crntData] = toSave[crntData];
+	render();
+	document.getElementById('load').style.display = 'none';
+	hideFiller();
+	return false;
+}
+function hideFiller(){
+	document.getElementById('filler').style.display = 'none'
+}
+function showFiller(id){
+	if(id==='new'){
+		document.forms.frm.title.value = '';
+		document.forms.frm.url.value = '';
+		document.forms.frm.subtitle.value = '';
+		crntData = Object.keys(allDatas).length;
+	} else {
+		const {url, subtitle, title} = allDatas[id];
+		document.forms.frm.title.value = title;
+		document.forms.frm.url.value = url;
+		document.forms.frm.subtitle.value = subtitle||'';
+		crntData = id;
+	}
+	document.getElementById('filler').style.display = 'flex'
+}
+async function dlt(id){
+	if(confirm('Are you sure to delete '+allDatas[id].title+'?')){
+	document.getElementById('load').style.display = 'flex';
+		for(let i=id; i<Object.keys(allDatas).length-1; i++){
+			allDatas[i] = allDatas[i+1];
+		}
+		delete allDatas[Object.keys(allDatas).length-1];
+		await db.collection('users').doc('233').collection('drive').doc(type).set(allDatas);
+		render();
+	}
+	document.getElementById('load').style.display = 'none';
+}
+function render(){
+	let toShow = '';
+	let data = allDatas;
+	for(var i=0; i<Object.keys(data).length; i++){
+		toShow += `<div class='listElement' id='${i}'><div class='listElementMain' onclick='showFiller("${i}")'><div id='${i+'title'}' class='listItemHeading'>${data[i].title}</div><div id=${i+'subtitle'} class='listItemAbout'>${data[i].subtitle||''}</div></div><a class='listElementAnchor' id='${i+'delete'}' href='javascript:dlt(${i})'>delete</a><a class='listElementAnchor' id='${i+'url'}' target='_blank' href='${data[i].url}'>open</a></div>\n`;
+	}
+	document.getElementById('datas').innerHTML = toShow;
+	document.getElementById('main').style.display = 'block';
+	document.getElementById('load').style.display = 'none';
+}
+	</script>
 	</head>
 	<body>
-<div id="main" style="display: none; height:100%; width: 100%;">
-	<div class="leftColumn">
-		<form name="frm">
-			<label for="title">Title:</label>
-			<input type="text" name="title" /><br>
-			<label for="about">Short Description:</label>
-			<input type="text" name="about" /><br>
-			<label for="link">Link:</label>
-			<input type="text" name="link" /><br>
-			<input type="submit" value="Save" />
-		</form>
+<div id="main" style="display: none; height:100%; width: 100%; overflow-y: scroll;">
+	<div id="datas">
 	</div>
-	<div class="rightColumn">
-	</div>
+	<div class='listElement' onclick='showFiller("new")'><div class='listItemHeading'>+ Add Item</div></div>
+</div>
+<div id="filler" style="display: none; justify-content: center; flex-direction: column; align-items: center; position: absolute; top: 0; left: 0; height: 100%; width: 100%; background-color:#fff">
+	<form name="frm" onsubmit="save();return false;">
+		<label for="title">Title:</label>
+		<input type="text" name="title" /><br>
+		<label for="subtitle">Short Description:</label>
+		<input type="text" name="subtitle" /><br>
+		<label for="url">Link:</label>
+		<input type="text" name="url" /><br>
+		<input type="submit" value="Save" />
+	</form>
+	<a href="javascript:hideFiller()" class='formCncel'>cancel</a>
 </div>
 <div id="load" style="display: flex; position:absolute; background-color: #fff7; align-items: center; justify-content: center;top:0; left:0; right:0; bottom:0;">
 	<div class='loader'></div>
 </div>
 	<script>
-setTimeout(function (){
-	document.getElementById('main').style.display = 'flex';
-	document.getElementById('load').style.display = 'none';
-}, 100);
+function onTestLoad(){
+	setTimeout(function (){
+		document.getElementById('main').style.display = 'block';
+		document.getElementById('load').style.display = 'none';
+	}, 1000);
+}
+async function onLoad(){
+	var vars = document.URL.split('?');
+	if(vars.length!==2){
+		document.getElementById('load').style.display = 'none';
+		setTimeout(() => alert('Document not found'), 50);
+		return;
+	}
+	type = vars[1].split('&')[0].split('=')[1];
+	var data = await db.collection('users').doc('233').collection('drive').doc(type).get()
+	if(!data.exists){
+		document.getElementById('load').style.display = 'none';
+		setTimeout(() => alert('Document "'+type+'" not found'), 50);
+		return;
+	}
+	allDatas = data.data();
+	render();
+}
+onLoad();
 	</script>
 	</body>
 </html>

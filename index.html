@@ -3,16 +3,35 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>SIMAT, NSS Unit 233, APJAKTU</title>
-		<script type="text/javascript">
+<script	src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyDsQxF3m_SqRGSKrEe48RfPTRHWb_TjKnY",
+    authDomain: "nsssimat-233.firebaseapp.com",
+    databaseURL: "https://nsssimat-233.firebaseio.com",
+    projectId: "nsssimat-233",
+    storageBucket: "nsssimat-233.appspot.com",
+    messagingSenderId: "839441345804",
+    appId: "1:839441345804:web:47dc358189081ad7dfad29",
+    measurementId: "G-4EP88P3ZE8"
+  };
+  firebase.initializeApp(firebaseConfig);
+//  firebase.analytics();
+const db = firebase.firestore();
+</script>	<script type="text/javascript">
 function loadv(){
-	fetch('version').then(r => r.text()).then(v => {
+//	fetch('version').then(r => r.text()).then(v => {
+	db.collection('apk').doc('version').get().then(data => {
 		// alert(v);
-		document.getElementById('version').innerHTML = 'v'+v;
+		document.getElementById('version').innerHTML = 'v'+data.data().v;
 	}).catch(e => alert(e));
 }
 function loads(){
-	fetch('size').then(r => r.text()).then(s => {
-		document.getElementById('size').innerHTML = document.getElementById('size').innerHTML+' ('+s+')';
+	db.collection('apk').doc('size').get().then(data => {
+		document.getElementById('size').innerHTML = document.getElementById('size').innerHTML+' ('+data.data().s+')';
 	}).catch(e => alert(e));
 }
 		</script>
@@ -21,7 +40,7 @@ function loads(){
 		<img src="nss.png" style="width:100px; height:100px"><br>
 		<img src="nssunit233.png" style="width:200px;margin-top: 15;">
 		<br><br><br>
-		<a href="app-release.apk" id="size">Download apk</a> 
+		<a href="app-release.apk" id="size">Download Test Mode APK</a> 
 		<div style="margin-top: 10" id="version"></div>
 		<script type="text/javascript">
 			loadv();loads();
