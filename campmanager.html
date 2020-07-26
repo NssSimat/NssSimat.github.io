@@ -76,6 +76,7 @@ form {
 }
 .listElement {
 	padding: 20;
+	align-items: center;
 	border-style: solid;
 	border-width: 0 0 1 0;
 	border-color: #aaa;
@@ -89,6 +90,16 @@ form {
 }
 .listElementAnchor {
 	margin-left: 15;
+	line-height: 20px;
+}
+.listElementAnchorContainer {
+	line-height: 20px;
+}
+.delete {
+	color: #f00;
+}
+.listElementLinks {
+	margin-left: 15px;
 }
 .listItemAbout {
 	font-size: 15;
@@ -184,10 +195,10 @@ function render(){
 					<div id='${i+'title'}' class='listItemHeading'>${data[i].title}</div>
 					<div id=${i+'description'} class='listItemAbout'>${data[i].description||''}</div>
 				</div>
-				<a class='listElementAnchor' id='${i+'delete'}' href='javascript:dlt(${i})'>delete</a>
+				<a class='listElementAnchor delete' id='${i+'delete'}' href='javascript:dlt(${i})'>delete</a>
 				<div class='listElementLinks'>
-					<a class='listElementAnchor' id='${i}report' target='_blank' href='${data[i].report}'>report</a>
-					<a class='listElementAnchor' id='${i}gallery' target='_blank' href='${data[i].gallery}'>gallery</a>
+					<div class='listElementAnchorContainer'><a class='listElementAnchor' id='${i}report' target='_blank' href='${data[i].report}'>report</a></div>
+					<div class='listElementAnchorContainer'><a class='listElementAnchor' id='${i}gallery' target='_blank' href='${data[i].gallery}'>gallery</div>
 				</div>
 			</div>\n
 		`;
