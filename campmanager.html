@@ -1,0 +1,245 @@
+<html>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<head>
+		<title>Camps Manager</title>
+<style>
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.loader {
+  margin: 60px auto;
+  font-size: 5px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-right: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1.5em solid rgba(0, 0, 0, 0.05);
+  border-left: 1.5em solid #00000055;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 0.8s infinite linear;
+  animation: load8 0.8s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+</style>
+<style>
+body {
+	margin: 0;
+}
+.leftColumn {
+	border-width: 1;
+	border-color: #000;
+	padding-top: 30;
+	padding-left: 15;
+	padding-right: 15;
+	padding-bottom: 30;
+}
+.rightColumn {
+	flex: 1;
+	border-left-width: 1;
+	border-color: #aaa;
+	border-left-style: solid;
+}
+input {
+	width: -webkit-fill-available;
+	margin-bottom: 15;
+	margin-top: 5;
+	padding: 5;
+}
+form {
+	min-width: 25em;
+	margin: 0 auto 0 auto;
+}
+.listElement {
+	padding: 20;
+	border-style: solid;
+	border-width: 0 0 1 0;
+	border-color: #aaa;
+	display: flex;
+}
+.listElement:hover{
+	background-color: #eee;
+}
+.listElementMain {
+	flex: 1;
+}
+.listElementAnchor {
+	margin-left: 15;
+}
+.listItemAbout {
+	font-size: 15;
+	font-color: #555;
+}
+.listItemHeading {
+	font-size: 20;
+	font-weight: bold;
+	margin-bottom: 5;
+}
+.formCancel {
+	align-self: center;
+}
+</style>
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyDsQxF3m_SqRGSKrEe48RfPTRHWb_TjKnY",
+    authDomain: "nsssimat-233.firebaseapp.com",
+    databaseURL: "https://nsssimat-233.firebaseio.com",
+    projectId: "nsssimat-233",
+    storageBucket: "nsssimat-233.appspot.com",
+    messagingSenderId: "839441345804",
+    appId: "1:839441345804:web:47dc358189081ad7dfad29",
+    measurementId: "G-4EP88P3ZE8"
+  };
+  firebase.initializeApp(firebaseConfig);
+//  firebase.analytics();
+const db = firebase.firestore();
+</script>
+	<script>
+var allDatas = {};
+var crntData = null;
+var type= '';
+async function save(){
+	document.getElementById('load').style.display = 'flex';
+	const forms = document.forms.frm;
+	var keys = ['title', 'description', 'report', 'gallery'];
+	var toSave = {};
+	toSave[crntData] = {};
+	for(let i of keys){
+		toSave[crntData][i] = forms[i].value;
+	}
+	await db.collection('users').doc('233').collection('drive').doc(type).update(toSave);
+	allDatas[crntData] = toSave[crntData];
+	render();
+	document.getElementById('load').style.display = 'none';
+	hideFiller();
+	return false;
+}
+function hideFiller(){
+	document.getElementById('filler').style.display = 'none'
+}
+function showFiller(id){
+	if(id==='new'){
+		document.forms.frm.title.value = '';
+		document.forms.frm.report.value = '';
+		document.forms.frm.gallery.value = '';
+		document.forms.frm.description.value = '';
+		crntData = Object.keys(allDatas).length;
+	} else {
+		const {report, gallery, description, title} = allDatas[id];
+		document.forms.frm.title.value = title;
+		document.forms.frm.report.value = report;
+		document.forms.frm.gallery.value = gallery;
+		document.forms.frm.description.value = description||'';
+		crntData = id;
+	}
+	document.getElementById('filler').style.display = 'flex'
+}
+async function dlt(id){
+	if(confirm('Are you sure to delete '+allDatas[id].title+'?')){
+	document.getElementById('load').style.display = 'flex';
+		for(let i=id; i<Object.keys(allDatas).length-1; i++){
+			allDatas[i] = allDatas[i+1];
+		}
+		delete allDatas[Object.keys(allDatas).length-1];
+		await db.collection('users').doc('233').collection('drive').doc(type).set(allDatas);
+		render();
+	}
+	document.getElementById('load').style.display = 'none';
+}
+function render(){
+	let toShow = '';
+	let data = allDatas;
+	for(var i=0; i<Object.keys(data).length; i++){
+		toShow += `
+			<div class='listElement' id='${i}'>
+				<div class='listElementMain' onclick='showFiller("${i}")'>
+					<div id='${i+'title'}' class='listItemHeading'>${data[i].title}</div>
+					<div id=${i+'description'} class='listItemAbout'>${data[i].description||''}</div>
+				</div>
+				<a class='listElementAnchor' id='${i+'delete'}' href='javascript:dlt(${i})'>delete</a>
+				<div class='listElementLinks'>
+					<a class='listElementAnchor' id='${i}report' target='_blank' href='${data[i].report}'>report</a>
+					<a class='listElementAnchor' id='${i}gallery' target='_blank' href='${data[i].gallery}'>gallery</a>
+				</div>
+			</div>\n
+		`;
+	}
+	document.getElementById('datas').innerHTML = toShow;
+	document.getElementById('main').style.display = 'block';
+	document.getElementById('load').style.display = 'none';
+}
+	</script>
+	</head>
+	<body>
+<div id="main" style="display: none; height:100%; width: 100%; overflow-y: scroll;">
+	<div id="datas">
+	</div>
+	<div class='listElement' onclick='showFiller("new")'><div class='listItemHeading'>+ Add Item</div></div>
+</div>
+<div id="filler" style="display: none; justify-content: center; flex-direction: column; align-items: center; position: absolute; top: 0; left: 0; height: 100%; width: 100%; background-color:#fff">
+	<form name="frm" onsubmit="save();return false;">
+		<label for="title">Title:</label>
+		<input type="text" name="title" /><br>
+		<label for="description">Description:</label>
+		<input type="text" name="description" /><br>
+		<label for="report">Report Link:</label>
+		<input type="text" name="report" /><br>
+		<label for="gallery">Gallery Link:</label>
+		<input type="text" name="gallery" /><br>
+		<input type="submit" value="Save" />
+	</form>
+	<a href="javascript:hideFiller()" class='formCncel'>cancel</a>
+</div>
+<div id="load" style="display: flex; position:absolute; background-color: #fff7; align-items: center; justify-content: center;top:0; left:0; right:0; bottom:0;">
+	<div class='loader'></div>
+</div>
+	<script>
+function onTestLoad(){
+	setTimeout(function (){
+		document.getElementById('main').style.display = 'block';
+		document.getElementById('load').style.display = 'none';
+	}, 1000);
+}
+async function onLoad(){
+	type = 'camps';
+	var data = await db.collection('users').doc('233').collection('drive').doc(type).get()
+	if(!data.exists){
+		document.getElementById('load').style.display = 'none';
+		setTimeout(() => alert('Document "'+type+'" not found'), 50);
+		return;
+	}
+	allDatas = data.data();
+	render();
+}
+onLoad();
+	</script>
+	</body>
+</html>
