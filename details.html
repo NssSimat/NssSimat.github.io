@@ -226,7 +226,7 @@ function rowify(arr, childrenOnly){
 		<div id="load" style="position:absolute; background-color: #fff7; display: none; align-items: center; justify-content: center;top:0; left:0; right:0; bottom:0;">
 		<div class='loader'></div>
 		</div>
-		<div style="position:absolute; bottom:0px; right:0px; margin-right:20px; margin-bottom:5px; color:#aaa">v0.1.3</div>
+		<div style="position:absolute; bottom:0px; right:0px; margin-right:20px; margin-bottom:5px; color:#aaa">v0.1.4</div>
 	</body>
 	<script>
 //document.getElementById('data').innerHTML = rowify(['Enroll. no', 'Campus', 'Community', 'Orientation'])
@@ -235,7 +235,7 @@ db.collection("users").onSnapshot(function(snapshot) {
 	snapshot.docChanges().forEach(function(change) {
 //		console.log(change);
 		// if(!change.doc.data().attendence) return;
-		const {campus, community, orientation} = change.doc.data()['2020'];
+		const {campus, community, orientation} = change.doc.data()['2020'] || {campus:0, community:0, orientation:0};
 		const _id = change.doc.id;
 		if (change.type === "added") {
 			document.getElementById('data').innerHTML += rowify([_id,campus, community, orientation]);
