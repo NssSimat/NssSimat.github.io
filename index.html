@@ -34,16 +34,21 @@ function loads(){
 		document.getElementById('size').innerHTML = document.getElementById('size').innerHTML+' ('+data.data().s+')';
 	}).catch(e => alert(e));
 }
+function loadu(){
+	db.collection('apk').doc('url').get().then(data => {
+		document.getElementById('size').href = data.data().u;
+	}).catch(e => alert(e));
+}
 		</script>
 	</head>
 	<body style="align-items: center; width:100%; text-align: center">
 		<img src="nss.png" style="width:100px; height:100px"><br>
 		<img src="nssunit233.png" style="width:200px;margin-top: 15;">
 		<br><br><br>
-		<a href="app-release.apk" id="size">Download Test Mode APK</a> 
+		<a id="size">Download Test Mode APK</a> 
 		<div style="margin-top: 10" id="version"></div>
 		<script type="text/javascript">
-			loadv();loads();
+			loadv();loads();loadu();
 		</script>
 	</body>
 </html>
