@@ -174,22 +174,21 @@ function submitnow(){
 		})
 		.then(() => {
 			console.log('aaah aaah', dataToSet, reg.value);
+			reg.value = parseInt(reg.value)+10000;
+			campus.value = 0;
+			community.value = 0;
+			orientation.value = 0;
+			
 			document.getElementById('load').style.display = 'none'
 			// console.log(campus.focus, typeof campus.focus);
 			reg.focus();
+
 		})
 		.catch(error => {
 			document.getElementById('load').style.display = 'none'
 			alert("Some error occurred, couldn't upload data.");
 			console.log(error)
 		});
-
-
-	reg.value = parseInt(reg.value)+10000;
-	campus.value = 0;
-	community.value = 0;
-	orientation.value = 0;
-
 	return false;
 }
 function rowify(arr, childrenOnly){
