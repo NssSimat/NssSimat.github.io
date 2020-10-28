@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Student Details Adder</title>
+		<title>Volunteer Details Adder</title>
 		<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-firestore.js"></script>
 		<script>
@@ -158,15 +158,28 @@ function submitnow(){
 		return false;
 	}
 	document.getElementById('load').style.display = 'flex';
-	db.collection('users').doc(reg.value).set({attendence: {community:communityValue, campus:campusValue, orientation:orientationValue}}).then(() => {
-		document.getElementById('load').style.display = 'none'
-//		console.log(campus.focus, typeof campus.focus);
-		reg.focus();
-	}).catch(error => {
-		document.getElementById('load').style.display = 'none'
-		alert("Some error occurred, couldn't upload data.");
-		console.log(error)
-	})
+	const dataToSet = {'2020': {community:communityValue, campus:campusValue, orientation:orientationValue}};
+	db
+		.collection('users')
+		.doc(reg.value)
+		.set(dataToSet)
+		.then(() => 
+			db
+				.collection('users')
+				.doc('233')
+				.collection('users')
+				.doc(reg.value)
+				.set(dataToSet))
+		.then(() => {
+			document.getElementById('load').style.display = 'none'
+			// console.log(campus.focus, typeof campus.focus);
+			reg.focus();
+		})
+		.catch(error => {
+			document.getElementById('load').style.display = 'none'
+			alert("Some error occurred, couldn't upload data.");
+			console.log(error)
+		});
 
 
 	reg.value = parseInt(reg.value)+10000;
