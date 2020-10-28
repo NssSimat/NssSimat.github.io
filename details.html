@@ -234,8 +234,8 @@ db.collection("users").onSnapshot(function(snapshot) {
 //	if(snapshot.metadata.hasPendingWrites) return;
 	snapshot.docChanges().forEach(function(change) {
 //		console.log(change);
-		if(!change.doc.data().attendence) return;
-		const {campus, community, orientation} = change.doc.data().attendence;
+		// if(!change.doc.data().attendence) return;
+		const {campus, community, orientation} = change.doc.data()['2020'];
 		const _id = change.doc.id;
 		if (change.type === "added") {
 			document.getElementById('data').innerHTML += rowify([_id,campus, community, orientation]);
