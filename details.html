@@ -163,14 +163,17 @@ function submitnow(){
 		.collection('users')
 		.doc(reg.value)
 		.set(dataToSet)
-		.then(() => 
-			db
+		.then(() => {
+			console.log('aaah', dataToSet, reg.value);
+			return db
 				.collection('users')
 				.doc('233')
 				.collection('users')
 				.doc(reg.value)
-				.set(dataToSet))
+				.set(dataToSet)
+		})
 		.then(() => {
+			console.log('aaah aaah', dataToSet, reg.value);
 			document.getElementById('load').style.display = 'none'
 			// console.log(campus.focus, typeof campus.focus);
 			reg.focus();
