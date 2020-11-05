@@ -153,10 +153,10 @@ function submitnow(){
 	const campusValue = parseInt(campus.value);
 	const communityValue = parseInt(community.value);
 	const orientationValue = parseInt(orientation.value);
-	if(!campusValue>0 || !communityValue>0 || !orientationValue>0){
-		alert('Fill attendence details please');
-		return false;
-	}
+	// if(!campusValue>0 || !communityValue>0 || !orientationValue>0){
+	// 	alert('Fill attendence details please');
+	// 	return false;
+	// }
 	document.getElementById('load').style.display = 'flex';
 	const dataToSet = {'2020': {community:communityValue, campus:campusValue, orientation:orientationValue}};
 	db
