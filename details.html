@@ -158,13 +158,13 @@ function submitnow(){
 	// 	return false;
 	// }
 	document.getElementById('load').style.display = 'flex';
-	const dataToSet = {'2020': {community:communityValue, campus:campusValue, orientation:orientationValue}};
+	const dataToSet = {'2020': {community:communityValue, campus:campusValue, orientation:orientationValue}, year: '2020'};
 	db
 		.collection('users')
 		.doc(reg.value)
 		.set(dataToSet)
 		.then(() => {
-			console.log('aaah', dataToSet, reg.value);
+			// console.log('aaah', dataToSet, reg.value);
 			return db
 				.collection('users')
 				.doc('233')
@@ -173,7 +173,7 @@ function submitnow(){
 				.set(dataToSet)
 		})
 		.then(() => {
-			console.log('aaah aaah', dataToSet, reg.value);
+			// console.log('aaah aaah', dataToSet, reg.value);
 			reg.value = parseInt(reg.value)+10000;
 			campus.value = 0;
 			community.value = 0;
@@ -211,8 +211,7 @@ function rowify(arr, childrenOnly){
 				<div class="hourDiv">Campus:<input class="hourInput" type="number" name='campus' ><br><br></div>
 				<div class="hourDiv">Community:<input class="hourInput" type="number" maxLength="999" name='community' ><br><br></div>
 				<div class="hourDiv">Orientation:<input class="hourInput" type="number" max='999' name='orientation' ><br><br></div>
-				<!--<input type="button" class="submit" value="Save" onclick="submitnow()">-->
-				<input type="submit" class="submit" value="Save">
+			<input type="submit" class="submit" value="Save">
 			</form>
 		</div>
 		<div class='data' id='data'>
