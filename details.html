@@ -158,7 +158,7 @@ function submitnow(){
 	// 	return false;
 	// }
 	document.getElementById('load').style.display = 'flex';
-	const dataToSet = {'2020': {community:communityValue, campus:campusValue, orientation:orientationValue}, year: '2020'};
+	const dataToSet = {'2020': {community:communityValue, campus:campusValue, orientation:orientationValue}, year: 2020};
 	db
 		.collection('users')
 		.doc(reg.value)
