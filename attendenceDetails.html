@@ -284,7 +284,6 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-db.useEmulator('localhost', 8083)
 const activitiesRef = db.collection('users').doc('233').collection('activities');
 const usersRef = db.collection('users').doc('233').collection('users');
 
