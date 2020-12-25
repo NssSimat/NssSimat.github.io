@@ -1,0 +1,473 @@
+<html>
+	<head>
+		<title>Attendence</title>
+		<style>
+body {
+	margin: 0px;
+}
+
+.activityItem {
+	padding: 20px 40px 20px 40px;
+	border-style: solid;
+	border-width: 0px 0px 1px 0px;
+	border-color: #b5b5b5;
+}
+.activityItemName {
+	font-weight: bold;
+	font-size: 20px;
+}
+.activityItemAttended {
+	font-size: 17px;
+	color: gray;
+}
+.activityType {
+	font-size: 17px;
+	color: gray;
+}
+.activityItemDate {
+	color: gray;
+	font-size: 17px;
+}
+.activityItem:hover {
+	background-color: bisque;
+}
+.statusElement {
+	width: 15em;
+	font-weight: bold;
+}
+.activityStatus {
+	width: 30%;
+	min-width: 10em;
+}
+.attendenceItem {
+	padding: 10px 20px;
+	display: flex;
+	justify-content: space-between;
+}
+.attendenceItem:hover {
+	background-color: bisque;
+}
+.attendenceName {
+	font-size: 17px;
+}
+.attendenceId {
+	font-size: 15px;
+	color: gray;
+}
+.attendence {
+	font-size: 30px;
+	font-weight: bold;
+}
+.activityBack {
+	position: absolute;
+	left: 75vw;
+	margin: 1px;
+	top: 0px;
+	font-size: 25px;
+	line-height: 25px;
+	height: 2em;
+	width: 2em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	background-color: white;
+}
+.activityBack:hover {
+	background-color: lightgray;
+}
+
+
+
+#activityDetailsWrapper {
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	background-color: #0004;
+}
+#activityDetails {
+	width: 50vw;
+	height: 100vh;
+	background-color: white;
+}
+#activityList {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	overflow-y: scroll;
+}
+#activityName {
+	font-size: 30px;
+	font-weight: bold;
+}
+#activityType {
+	font-size: 17px;
+}
+#activityDate {
+	font-size: 17px;
+}
+
+
+.community {
+	color: darkred;
+}
+.campus {
+	color: darkblue;
+}
+.orientation {
+	color: darkgreen;
+}
+
+.tick {
+	color: green;
+}
+.cross {
+	color: red;
+}
+
+.unregistered {
+	color: lightgray;
+}
+
+
+.d-flex {
+	display: flex;
+}
+.flex-column {
+	flex-direction: column;
+}
+.flex-row {
+	flex-direction: row;
+}
+.justify-content-between {
+	justify-content: space-between;
+}
+.shadow-large {
+	box-shadow: 00px 0px 200px gray;
+}
+.border-solid {
+	border-style: solid;
+	border-width: 0px;
+}
+.scrollable-y {
+	overflow-y: scroll;
+}
+
+
+.flex-grow-1 {
+	flex-grow: 1;
+}
+
+.p-1 {
+	padding: 5px;
+}
+.p-2 {
+	padding: 10px;
+}
+.p-3 {
+	padding: 15px;
+}
+.p-4 {
+	padding: 20px;
+}
+.p-5 {
+	padding: 25px;
+}
+
+.m-1 {
+	margin: 5px;
+}
+.m-2 {
+	margin: 10px;
+}
+.m-3 {
+	margin: 15px;
+}
+.m-4 {
+	margin: 20px;
+}
+.m-5 {
+	margin: 25px;
+}
+
+.mt-1 {
+	margin-top: 5px;
+}
+.mt-2 {
+	margin-top: 10px;
+}
+.mt-3 {
+	margin-top: 15px;
+}
+.mt-4 {
+	margin-top: 20px;
+}
+.mt-5 {
+	margin-top: 25px;
+}
+
+.mb-1 {
+	margin-bottom: 5px;
+}
+.mb-2 {
+	margin-bottom: 10px;
+}
+.mb-3 {
+	margin-bottom: 15px;
+}
+.mb-4 {
+	margin-bottom: 20px;
+}
+.mb-5 {
+	margin-bottom: 25px;
+}
+
+.ml-1 {
+	margin-left: 5px;
+}
+.ml-2 {
+	margin-left: 10px;
+}
+.ml-3 {
+	margin-left: 15px;
+}
+.ml-4 {
+	margin-left: 20px;
+}
+.ml-5 {
+	margin-left: 25px;
+}
+
+.mr-1 {
+	margin-right: 5px;
+}
+.mr-2 {
+	margin-right: 10px;
+}
+.mr-3 {
+	margin-right: 15px;
+}
+.mr-4 {
+	margin-right: 20px;
+}
+.mr-5 {
+	margin-right: 25px;
+}
+
+.bb-1 {
+	border-bottom-width: 1px;
+}
+.bb-2 {
+	border-bottom-width: 2px;
+}
+.bb-3 {
+	border-bottom-width: 3px;
+}
+
+		</style>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-firestore.js"></script>
+		<script>
+var firebaseConfig = {
+	apiKey: "AIzaSyDsQxF3m_SqRGSKrEe48RfPTRHWb_TjKnY",
+	authDomain: "nsssimat-233.firebaseapp.com",
+	databaseURL: "https://nsssimat-233.firebaseio.com",
+	projectId: "nsssimat-233",
+	storageBucket: "nsssimat-233.appspot.com",
+	messagingSenderId: "839441345804",
+	appId: "1:839441345804:web:47dc358189081ad7dfad29",
+	measurementId: "G-4EP88P3ZE8"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+db.useEmulator('localhost', 8083)
+const activitiesRef = db.collection('users').doc('233').collection('activities');
+const usersRef = db.collection('users').doc('233').collection('users');
+
+const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sept', 'oct', 'nov', 'dec']
+
+var activitiesDict = {};
+var activitiesList = [];
+var attendedDict = {};
+var usersDict = {};
+
+var listElement = null;
+var attendenceList = null;
+		</script>
+		<script>
+function renderitem(id, name, date, type='', attended) {
+	// let final = activitiesList.map(i => {
+	// 	let date = new Date(date);
+	// 	return `<div onclick="openActivity('${id}')" class="activityItem">
+	// 		<div class="activityItemName">${name}</div>
+	// 		<div class="d-flex flex-row justify-content-between">
+	// 			<div id="activityItemAttendence-${id}" class="activityItemAttended">attended by 0</div>
+	// 			<div class="activityItemDate">${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}</div>
+	// 		</div>
+	// 	</div>`;
+	// }).join('');
+	// listElement.innerHTML = final;
+	let itemDiv = document.createElement("div")
+	itemDiv.className = "activityItem"
+	itemDiv.onclick = () => openActivity(id)
+
+	let itemName = document.createElement("div")
+	itemName.className = "activityItemName"
+	itemName.appendChild(document.createTextNode(name))
+
+	let itemSubDiv = document.createElement('div')
+	itemSubDiv.className = "d-flex flex-row mt-2"
+
+	let itemAttended = document.createElement('div')
+	itemAttended.className = "activityItemAttended statusElement"
+	itemAttended.appendChild(document.createTextNode(`attended by ${attended||0}`))
+
+	let itemDate = document.createElement('div')
+	itemDate.className = "activityItemDate statusElement"
+	itemDate.appendChild(document.createTextNode(`${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`))
+
+	let itemType = document.createElement('div')
+	itemType.className = "activityType statusElement "+type
+	itemType.appendChild(document.createTextNode(type.substring(0,1).toUpperCase()+type.substring(1, type.length)))
+
+	itemSubDiv.appendChild(itemAttended)
+	itemSubDiv.appendChild(itemDate)
+	itemSubDiv.appendChild(itemType)
+	itemDiv.appendChild(itemName)
+	itemDiv.appendChild(itemSubDiv)
+
+	listElement.appendChild(itemDiv)
+
+}
+function renderUser(id, name, year, cl, dep){
+	let userItem = document.createElement('div')
+	userItem.className = 'attendenceItem'
+	
+	let userDiv = document.createElement('div')
+
+	let userName = document.createElement('div')
+	userName.className = "attendenceName "+(name?'':'unregistered')
+	userName.appendChild(document.createTextNode(name||'unregistered'))
+
+	let userId = document.createElement('div')
+	userId.className = "attendenceId"
+	userId.appendChild(document.createTextNode(`${cl||''} ${dep||''} ${id}`))
+
+	let userAttendence = document.createElement('div')
+	userAttendence.className="attendence cross"
+	userAttendence.appendChild(document.createTextNode('☒'))
+	userAttendence.id = id+'-attendence'
+
+	userDiv.appendChild(userName)
+	userDiv.appendChild(userId)
+
+	userItem.appendChild(userDiv)
+	userItem.appendChild(userAttendence)
+
+	usersDict[id] = userAttendence;
+
+	attendenceListElement.appendChild(userItem)
+}
+function initialize(){
+	activitiesRef.where('done', '==', true).get().then(list => {
+		activitiesList = list.docs.map(i => ({id: i.id, ...i.data()})).sort((a,b) => a.date-b.date);
+		list.forEach(doc => {
+			activitiesDict[doc.id] = doc.data();
+			activitiesRef.doc(doc.id).collection('attended').get().then(atts => {
+				let attended = {};
+				atts.docs.forEach(attDoc => {
+					attended[attDoc.id] = true;
+				})
+				attendedDict[doc.id] = attended;
+				renderitem(doc.id, doc.data().name, new Date(doc.data().date), doc.data().cat, Object.keys(attended).length);
+			})
+		})
+	})
+
+	usersRef.get().then(list => {
+		list.docs.sort((a,b) => {
+		if(parseInt(a.data().year)<parseInt(b.data().year))
+			return -1;
+		if (parseInt(a.data().year)>parseInt(b.data().year))
+			return 1;
+		// console.log(a.name?.attr, b.name?.attr)
+		if(a.data().name && b.data().name)
+			// return (a.name.attr+'').localeCompare(b.name.attr);
+			return a.data().name>b.data().name ? 1 : a.data().name<b.data().name ? -1 : 0
+		if(a.data().name && !b.data().name)
+			return -1;
+		if(b.data().name && !a.data().name)
+			return 1;
+		return a.id-b.id;
+	}).forEach(doc => {
+			renderUser(doc.id, doc.data().name, doc.data().year, doc.data().cl, doc.data().dep)
+		})
+	})
+}
+function openActivity(id){
+	// console.log(id, 'opening....', attendedDict[id]);
+	let type = activitiesDict[id].cat
+	let typeText = type.substring(0, 1).toUpperCase()+type.substring(1,type.length)
+	let date = new Date(activitiesDict[id].date)
+	const activityDetails = document.getElementById('activityDetailsWrapper')
+	document.getElementById('activityName').innerHTML = activitiesDict[id].name
+	document.getElementById('activityType').innerHTML = typeText
+	document.getElementById('activityType').className = "activityStatus "+type;
+	document.getElementById('activityDate').innerHTML = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+	let attended = false;
+	for(let i in usersDict){
+		attended = attendedDict[id][i];
+		usersDict[i].className = "attendence "+(attended?'tick':'cross')
+		usersDict[i].innerHTML = attended?'☑':'☒';
+	}
+	// docu
+	activityDetails.style.display = 'flex';
+}
+function hideActivity(){
+	document.getElementById('activityDetailsWrapper').style.display = 'none';
+}
+		</script>
+	</head>
+	<body>
+		<div id="activityList"></div>
+		<div id="activityDetailsWrapper">
+			<div class="activityBack" onclick="hideActivity()">×</div>
+			<div id="activityDetails" class="shadow-large d-flex flex-column">
+				<div class="p-5 bb-1 border-solid">
+					<div id="activityName">Activity Name</div>
+					<div class="d-flex mt-1">
+						<div id="activityType" class="activityStatus">Oricampunity</div>
+						<div id="activityDate" class="activityStatus">12-06-2001</div>
+					</div>
+				</div>
+				<div class="flex-grow-1 scrollable-y">
+					<div id="attendenceList">
+						<!-- <div class="attendenceItem">
+							<div>
+								<div class="attendenceName">Nanda Krishnan</div>
+								<div class="attendenceId">233012020</div>
+							</div>
+							<div class="attendence tick">☑</div>
+						</div>
+						<div class="attendenceItem">
+							<div>
+								<div class="attendenceName">Nanda Krishnan</div>
+								<div class="attendenceId">233012020</div>
+							</div>
+							<div class="attendence cross">☒</div>
+						</div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+listElement = document.getElementById("activityList");
+attendenceListElement = document.getElementById("attendenceList");
+initialize()
+		</script>
+	</body>
+</html>
